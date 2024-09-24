@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request,  jsonify
 from models.task import Task
 
 #Como criar aplicação:
@@ -18,6 +18,27 @@ def create_task():
     tasks.append(new_task)
     print(tasks)
     return jsonify({"message": "Nova tarefa criada com sucesso!"})
+
+@app.route("/tasks", methods=["GET"])
+def get_tasks():
+    task_list = [task.to_dict() for task in tasks]
+    
+#    for task in tasks:
+        #task_list.append(task.to_dict()) 
+    output = {
+        "tasks": task_list,
+        "total_tasks": len(task_list)
+        }
+    return output
+
+@app.route("/tasks/<int:id>", methods=["GET"])
+def get_task(id):
+    for t in tasks:
+        if t.id == id:
+            return jsonify(t.to_dict())
+    return jsonify({"message:": "Não foi possível encontrar a atividade"}), 404
+
+
 
 if __name__ == "__main__": #Garantir que só vai rodar quando executarmos ele de forma manual
 #Como rodar
